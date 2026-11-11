@@ -24,3 +24,14 @@ Each lot can be linked directly, for example `index.html#lot-08`. The lot sheet 
 ## Image sources
 
 Product images come from the manufacturers' own product pages (Siemens Energy, GE Vernova, Ansaldo Energia, Wärtsilä, MTU). They show the model or equipment class, not the specific units offered.
+
+## PDF brochure
+
+`brochure/Power-Equipment-Schedule.pdf` is the printable version of the schedule in the same dark style: cover, overview with stated capacity and contents, one page per principal lot, the full board on one page, a sheet for every lot (two per page) and the terms of circulation. It is generated from `listings.js`, so regenerate it whenever the inventory changes:
+
+```
+node brochure/build.js
+```
+
+This needs Node and Playwright with Chromium (`npm i -g playwright` and `npx playwright install chromium`). If Python with `pikepdf` is installed (`pip install pikepdf`), the PDF is also saved as "fast web view" so it starts showing before it has fully downloaded. The brochure uses static instances of the site's variable fonts in `brochure/fonts/`, because PDF viewers render embedded variable fonts slowly. The layout lives in `brochure/brochure.html`, `brochure.css` and `brochure.js`. If `contactEmail` is set in `listings.js` it is printed on the back page.
+
