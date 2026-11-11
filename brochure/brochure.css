@@ -109,7 +109,7 @@ sup { font: 500 .6em/0 var(--mono); vertical-align: .55em; color: var(--amber); 
 
 /* ---------- Overview ---------- */
 .overview .body { padding-top: 14mm; gap: 0; }
-.overview .h2 { margin-top: 5mm; max-width: 15ch; }
+.overview .h2 { margin-top: 5mm; max-width: 17ch; }
 .overview__lede { margin-top: 6mm; max-width: 120mm; font-size: 9.6pt; line-height: 1.65; color: var(--bone-2); }
 .cap { margin-top: 14mm; }
 .cap__bar { display: flex; gap: .8mm; height: 11mm; margin-top: 5mm; }
@@ -128,7 +128,7 @@ sup { font: 500 .6em/0 var(--mono); vertical-align: .55em; color: var(--amber); 
 .contents li { display: flex; align-items: baseline; gap: 3mm; padding: 2.6mm 0; border-bottom: .25mm solid var(--line); font-size: 9.4pt; }
 .contents li b { width: 9mm; font: 500 6.4pt var(--mono); letter-spacing: .12em; color: var(--amber); }
 .contents li::after { content: ""; order: 1; flex: 1; height: .3mm; transform: translateY(-.6mm); background: radial-gradient(circle, var(--faint) .18mm, transparent .24mm) 0 0 / 1.3mm .3mm repeat-x; }
-.contents li em { order: 2; font: 400 7pt var(--mono); font-style: normal; color: var(--dim); font-variant-numeric: tabular-nums; }
+.contents li em { white-space: nowrap; order: 2; font: 400 7pt var(--mono); font-style: normal; color: var(--dim); font-variant-numeric: tabular-nums; }
 
 /* ---------- Principal lot ---------- */
 .principal .body { padding-top: 10mm; }
@@ -182,7 +182,7 @@ sup { font: 500 .6em/0 var(--mono); vertical-align: .55em; color: var(--amber); 
 /* ---------- Back cover ---------- */
 .back .body { padding-top: 16mm; }
 .back .h2 { margin-top: 5mm; max-width: 14ch; }
-.terms { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7mm 10mm; margin-top: 10mm; counter-reset: t; }
+.terms { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7mm 10mm; margin-top: 10mm; counter-reset: t; }
 .terms li { counter-increment: t; padding-top: 3.4mm; border-top: .25mm solid var(--line-2); }
 .terms h3 { display: flex; gap: 3mm; font: 500 6.4pt var(--mono); letter-spacing: .16em; text-transform: uppercase; }
 .terms h3::before { content: counter(t, decimal-leading-zero); color: var(--amber); }

@@ -56,7 +56,23 @@
   function page(cls, inner) { return '<section class="page ' + cls + '">' + inner + "</section>"; }
 
   function title(l) { return esc(l.model) + (l.variant ? " <span>" + esc(l.variant) + "</span>" : ""); }
-  function makerLine(l) { return l.maker || "Manufacturer on request"; }
+  function makerLine(l) { return l.maker || ""; }
+  // round down to a clean figure and mark it as a minimum: 3,527 -> "3,500+"
+  function atLeast(n, step) { return fmt(Math.floor(n / step) * step, 0) + "+"; }
+  // summaries without hedging: drop "on request" phrases, fall back to what the lot does state
+  function blurbLine(l) {
+    var s = (l.summary || "").replace(/\s*·?\s*(unit count|sizes|details) on request/gi, "").replace(/^(unit count|details) on request$/i, "").trim();
+    if (/^lot$/i.test(s)) s = "Offered as a single lot";
+    if (/^several lots$/i.test(s)) s = "Several lots available";
+    return s || l.tags.join(" · ") || "Full particulars available to qualified principals";
+  }
+  // particulars: leave out anything not yet known, tidy qualifiers
+  function cleanSpecs(l) {
+    return l.specs.filter(function (sp) { return !/^on request$/i.test(sp[1]); }).map(function (sp) {
+      var v = sp[1].replace(/[;,]\s*(timing to be confirmed|sizes on request)/i, "").replace(/the two SGT-800 lots above/i, "Lots 01 and 02");
+      return [sp[0], v];
+    });
+  }
   function unitsText(l) { return l.unitsLabel || (l.units ? fmt(l.units, 0) : ""); }
   function mwText(l) { return l.mwLabel || (l.mw ? fmt(l.mw, 2) : ""); }
   var nil = '<span class="nil">—</span>';
@@ -64,22 +80,19 @@
   function plate(l, cls) {
     var inner = l.img
       ? ""
-      : '<div class="plate__art"><svg viewBox="0 0 400 200"><use href="#art-' + (l.cat === "recip" ? "engine" : "turbine") + '"/></svg><span>Photographs on request</span></div>';
+      : '<div class="plate__art"><svg viewBox="0 0 400 200"><use href="#art-' + (l.cat === "recip" ? "engine" : "turbine") + '"/></svg></div>';
     var data = l.img ? ' data-src="../images/' + esc(l.img) + '.webp" data-fit="' + esc(l.fit || "photo") + '"' : "";
     return '<div class="marks ' + cls + '"><div class="plate" style="height:100%"' + data + ">" + inner + "</div></div>";
   }
   function leaders(specs) {
-    if (!specs.length) return '<dl class="leaders"><div class="leaders__empty">Particulars for this lot are provided on request.</div></dl>';
+    if (!specs.length) return '<dl class="leaders"><div class="leaders__empty">Full particulars available to qualified principals.</div></dl>';
     return '<dl class="leaders">' + specs.map(function (s) { return "<div><dt>" + esc(s[0]) + "</dt><dd>" + esc(s[1]) + "</dd></div>"; }).join("") + "</dl>";
   }
   function ask(l) {
     var v = l.price
       ? '<p class="ask__value">' + esc(l.price) + (l.priceBasis ? " <small>" + esc(l.priceBasis) + "</small>" : "") + "</p>"
-      : '<p class="ask__value is-por">On request</p>';
+      : '<p class="ask__value is-por">On application</p>';
     return '<div class="ask"><p class="ask__label">Asking</p>' + v + "</div>";
-  }
-  function caption(l) {
-    return l.img ? "Manufacturer image of the model or equipment class. Not a photograph of the units offered." : "No photograph on file. Photographs are available on request.";
   }
 
   /* ---------- Cover ---------- */
@@ -88,8 +101,8 @@
     var notes = [
       { x: 24, y: 31, len: 26, html: "<b>" + esc(l.ref) + "</b>" + esc(l.maker + " " + l.model) + (l.variant ? " · " + esc(l.variant) : "") },
       { x: 55, y: 18, len: 15, html: "<b>" + esc(unitsText(l)) + " units</b>" + esc(l.summary.split(" · ").slice(1).join(" · ")) },
-      { x: 30, y: 63, len: 22, down: true, html: "<b>Asking</b><em>" + esc(l.price ? l.price + " " + (l.priceBasis || "") : "On request") + "</em>" },
-      { x: 77, y: 74, len: 9, down: true, left: true, html: "<b>Condition</b>" + esc(l.tags[0] || "On request") + (l.tags[1] ? "<br>" + esc(l.tags[1]) : "") },
+      { x: 30, y: 63, len: 22, down: true, html: "<b>Asking</b><em>" + esc(l.price ? l.price + " " + (l.priceBasis || "") : "On application") + "</em>" },
+      { x: 77, y: 74, len: 9, down: true, left: true, html: "<b>Condition</b>" + esc(l.tags[0] || "") + (l.tags[1] ? "<br>" + esc(l.tags[1]) : "") },
     ];
     var callouts = notes.map(function (c) {
       return '<div class="callout' + (c.down ? " callout--down" : "") + (c.left ? " callout--left" : "") + '" style="--x:' + c.x + "%;--y:" + c.y + "%;--len:" + c.len + 'mm"><span class="callout__stem"></span><span class="callout__dot"></span><span class="callout__label">' + c.html + "</span></div>";
@@ -100,15 +113,15 @@
       '<div class="cover__copy">' +
         '<p class="eyebrow">Circulated privately</p>' +
         "<h1>Capacity,<br>traded quietly.</h1>" +
-        '<p class="cover__lede">Gas turbines, aeroderivatives and reciprocating engines from ' + esc(makerText) + ". " + lots.length + " lots, offered subject to prior sale.</p>" +
+        '<p class="cover__lede">Gas turbines, aeroderivatives and reciprocating engines from ' + esc(makerText) + ". " + lots.length + " lots of utility-scale generating capacity, available for acquisition.</p>" +
         '<div class="scale"></div>' +
         '<dl class="readout">' +
-          "<div><dt>Stated output<sup>1</sup></dt><dd>" + fmt(Math.round(mw), 0) + "<small>MW</small></dd></div>" +
-          "<div><dt>Units stated<sup>1</sup></dt><dd>" + fmt(units, 0) + "</dd></div>" +
+          "<div><dt>Capacity</dt><dd>" + atLeast(mw, 100) + "<small>MW</small></dd></div>" +
+          "<div><dt>Units</dt><dd>" + atLeast(units, 10) + "</dd></div>" +
           "<div><dt>Lots</dt><dd>" + lots.length + "</dd></div>" +
           "<div><dt>Manufacturers</dt><dd>" + makers.length + "</dd></div>" +
         "</dl>" +
-        '<p class="cover__note"><sup>1</sup> Output is stated for ' + withMw + " of " + lots.length + " lots, unit counts for " + withUnits + ". Totals cover those lots only.</p>" +
+        '<div style="height:10mm"></div>' +
       "</div>" +
       foot(P.cover, "Revised " + asOf));
   }
@@ -122,24 +135,24 @@
       total += r.mw; stated += r.withMw;
       return r;
     });
-    var bar = data.map(function (r) { var t = CAT_TONE[r.key]; return '<span style="--w:' + r.mw + ";--tone:" + t[0] + ";--ink:" + t[1] + '"><i>' + Math.round(r.mw / total * 100) + "%</i></span>"; }).join("");
+    var bar = data.map(function (r) { var t = CAT_TONE[r.key]; return '<span style="--w:' + r.mw + ";--tone:" + t[0] + ";--ink:" + t[1] + '"><i>' + esc(CAT_SHORT[r.key].toUpperCase()) + "</i></span>"; }).join("");
     var keys = data.map(function (r) {
-      return '<div class="cap__key" style="--tone:' + CAT_TONE[r.key][0] + '"><span class="cap__name"><i></i>' + esc(CATS[r.key]) + '</span><span class="cap__mw">' + fmt(Math.round(r.mw), 0) + "<small>MW</small></span><span class=\"cap__sub\">" + r.lots + " lots · " + r.withMw + " state output · " + fmt(r.units, 0) + " units stated</span></div>";
+      return '<div class="cap__key" style="--tone:' + CAT_TONE[r.key][0] + '"><span class="cap__name"><i></i>' + esc(CATS[r.key]) + '</span><span class="cap__mw">' + atLeast(r.mw, 50) + "<small>MW</small></span><span class=\"cap__sub\">" + r.lots + " lots · " + atLeast(r.units, 5) + " units</span></div>";
     }).join("");
     var contents = [
       ["01", "Principal lots", P.principal],
       ["02", "The board: every lot at a glance", P.board],
       ["03", "Lot sheets, " + lots.length + " lots in lot order", P.sheets],
-      ["04", "Terms of circulation and enquiries", P.back],
+      ["04", "Terms and enquiries", P.back],
     ].map(function (c) { return "<li><b>" + c[0] + "</b>" + esc(c[1]) + "<em>p. " + pad(c[2]) + "</em></li>"; }).join("");
     return page("overview", run("Overview") +
       '<div class="body">' +
         '<p class="eyebrow">Overview</p>' +
-        '<h2 class="h2">' + lots.length + " lots, " + fmt(Math.round(mw), 0) + " MW stated.</h2>" +
-        '<p class="overview__lede">New, zero-hour and operating units from ' + esc(makerText) + ". Each lot carries a number. Quote it in every enquiry. Where a detail reads “on request” it has not yet been confirmed in writing.</p>" +
-        '<div class="cap"><p class="eyebrow">Stated capacity</p><div class="cap__bar">' + bar + '</div><div class="cap__keys">' + keys + "</div>" +
-        '<p class="cover__note" style="padding:4mm 0 0">' + fmt(Math.round(total), 0) + " MW is stated across " + stated + " of " + lots.length + " lots. Output for the other " + (lots.length - stated) + " is available on request, so these shares describe stated output only.</p></div>" +
-        '<div class="contents"><p class="eyebrow">Contents</p><ol>' + contents + "</ol></div>" +
+        '<h2 class="h2">' + lots.length + " lots. More than " + (Math.floor(mw / 100) / 10).toFixed(1) + "&nbsp;GW of capacity.</h2>" +
+        '<p class="overview__lede">New, zero-hour and operating units from ' + esc(makerText) + ". Every lot is numbered and set out on its own sheet in this schedule. Quote the number and full particulars follow.</p>" +
+        '<div class="cap"><p class="eyebrow">Capacity by class</p><div class="cap__bar">' + bar + '</div><div class="cap__keys">' + keys + "</div></div>" +
+        '<div class="contents"><p class="eyebrow">Highlights</p><ol>' + featured.map(function (l, i) { return "<li><b>" + pad(l.n) + "</b>" + esc((l.maker ? l.maker + " " : "") + l.model) + ". " + esc(l.blurb || blurbLine(l)) + "<em>p. " + pad(P.principal + i) + "</em></li>"; }).join("") + "</ol></div>" +
+        '<div class="contents" style="margin-top:12mm"><p class="eyebrow">Contents</p><ol>' + contents + "</ol></div>" +
       "</div>" + foot(P.overview));
   }
 
@@ -151,13 +164,13 @@
         plate(l, "principal__plate") +
         '<div class="principal__grid">' +
           "<div>" +
-            '<p class="maker">' + esc(makerLine(l)) + "</p>" +
+            (l.maker ? '<p class="maker">' + esc(l.maker) + "</p>" : "") +
             '<h2 class="principal__title">' + title(l) + "</h2>" +
             (l.blurb ? '<p class="principal__blurb">' + esc(l.blurb) + "</p>" : "") +
-            '<p class="principal__summary">' + esc(l.summary) + "</p>" +
+            '<p class="principal__summary">' + esc(blurbLine(l)) + "</p>" +
             ask(l) +
           "</div>" +
-          "<div>" + leaders(l.specs) + '<p class="entry__caption" style="margin-top:4mm">' + caption(l) + "</p></div>" +
+          "<div>" + leaders(cleanSpecs(l)) + "</div>" +
         "</div>" +
       "</div>" + foot(P.principal + i));
   }
@@ -167,14 +180,14 @@
     var rows = lots.map(function (l) {
       var price = l.price
         ? '<td class="p">' + esc(l.price) + "<small>" + esc(l.priceBasis || "") + "</small></td>"
-        : '<td class="p por">On request</td>';
+        : '<td class="p por">On application</td>';
       return "<tr>" +
         '<td class="n">' + pad(l.n) + "</td>" +
-        '<td class="m">' + esc(l.maker || "On request") + '</td><td class="t">' + title(l) + "</td>" +
+        '<td class="m">' + esc(l.maker || "") + '</td><td class="t">' + title(l) + "</td>" +
         '<td class="c">' + esc(CAT_SHORT[l.cat]) + "</td>" +
-        '<td class="u">' + (esc(unitsText(l)) || nil) + "</td>" +
-        '<td class="u">' + (esc(mwText(l)) || nil) + "</td>" +
-        '<td class="x">' + (l.tags.length ? esc(l.tags.join(" · ")) : nil) + "</td>" +
+        '<td class="u">' + esc(unitsText(l)) + "</td>" +
+        '<td class="u">' + esc(mwText(l)) + "</td>" +
+        '<td class="x">' + esc(l.tags.join(" · ")) + "</td>" +
         price +
         '<td class="pg">' + pad(pageOf(l)) + "</td>" +
         "</tr>";
@@ -183,8 +196,8 @@
       '<div class="body">' +
         '<p class="eyebrow">The board</p>' +
         '<h2 class="h2">Every lot on the schedule.</h2>' +
-        '<table class="board"><colgroup><col style="width:7mm"><col style="width:21mm"><col style="width:45mm"><col style="width:18mm"><col style="width:13mm"><col style="width:12mm"><col><col style="width:22mm"><col style="width:8mm"></colgroup><thead><tr><th>Lot</th><th>Maker</th><th>Equipment</th><th>Class</th><th style="text-align:right">Units</th><th style="text-align:right">MW</th><th>Condition · location</th><th style="text-align:right">Asking</th><th>Page</th></tr></thead><tbody>' + rows + "</tbody></table>" +
-        '<p class="board__legend">— Not stated. Available on request.</p>' +
+        '<table class="board"><colgroup><col style="width:7mm"><col style="width:21mm"><col style="width:45mm"><col style="width:18mm"><col style="width:13mm"><col style="width:12mm"><col><col style="width:22mm"><col style="width:8mm"></colgroup><thead><tr><th>Lot</th><th>Maker</th><th>Equipment</th><th>Class</th><th style="text-align:right">Units</th><th style="text-align:right">MW</th><th>Highlights</th><th style="text-align:right">Asking</th><th>Page</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+        '<p class="board__legend">Prices marked “on application” are provided to qualified principals.</p>' +
       "</div>" + foot(P.board));
   }
 
@@ -197,11 +210,10 @@
       '<div class="entry__grid">' +
         "<div>" +
           '<h3 class="entry__title">' + title(l) + "</h3>" +
-          '<p class="entry__summary">' + esc(l.summary) + "</p>" +
+          '<p class="entry__summary">' + esc(blurbLine(l)) + "</p>" +
           '<div style="margin-top:4mm">' + ask(l) + "</div>" +
-          '<p class="entry__caption">' + caption(l) + "</p>" +
         "</div>" +
-        "<div>" + leaders(l.specs) + "</div>" +
+        "<div>" + leaders(cleanSpecs(l)) + "</div>" +
       "</div>" +
     "</article>";
   }
@@ -237,20 +249,19 @@
   }
   function back() {
     var contact = SITE.contactEmail ? '<p class="contact">' + esc(SITE.contactEmail) + "</p>" : "";
-    return page("back", run("Terms of circulation") +
+    return page("back", run("Terms") +
       '<div class="body">' +
-        '<p class="eyebrow">Terms of circulation</p>' +
-        '<h2 class="h2">How this schedule should be read.</h2>' +
+        '<p class="eyebrow">Terms</p>' +
+        '<h2 class="h2">Terms of offer.</h2>' +
         '<ol class="terms">' +
-          "<li><h3>Prior sale</h3><p>All equipment is offered subject to prior sale and to verification of specifications, title and availability.</p></li>" +
-          "<li><h3>Confirmation</h3><p>Where a detail is marked “on request” it has not yet been confirmed in writing.</p></li>" +
-          "<li><h3>Records</h3><p>Full specifications, records and inspection access are provided on request.</p></li>" +
-          "<li><h3>Imagery</h3><p>Images show the model or equipment class, not the specific units offered. Product imagery belongs to the respective manufacturers.</p></li>" +
+          "<li><h3>Availability</h3><p>All equipment is offered subject to prior sale and to final verification of specifications, title and availability.</p></li>" +
+          "<li><h3>Due diligence</h3><p>Full specifications, records and inspection access are available to qualified principals.</p></li>" +
+          "<li><h3>Imagery</h3><p>Images are representative of the model or equipment class. Product imagery belongs to the respective manufacturers.</p></li>" +
         "</ol>" +
         '<div class="enquire">' + rosette() +
           '<p class="eyebrow">Enquiries</p>' +
           '<h2 class="enquire__title">Quote the lot number.</h2>' +
-          "<p>Specifications, records and inspection access follow on request. Schedule " + esc(schedNo) + ", revised " + esc(asOf) + ".</p>" + contact +
+          "<p>Full specifications, records and inspection access are available to qualified principals. Schedule " + esc(schedNo) + ", revised " + esc(asOf) + ".</p>" + contact +
         "</div>" +
       "</div>" + foot(P.back));
   }
