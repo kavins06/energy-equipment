@@ -4,6 +4,8 @@
  * cat:      "gt" (gas turbine) | "aero" (aeroderivative) | "recip" (reciprocating engine)
  * makers:   manufacturers used by the filter; leave empty when undisclosed
  * units/mw: numbers used for sorting and the headline totals; null when not stated
+ * unitsLabel / mwLabel: optional text shown in the schedule instead of the bare number
+ *           (for example "Up to 6" or "c. 123")
  * img:      file in /images without extension; null shows the line-drawing tile
  * fit:      "cut"   transparent cut-out, shown whole on the studio panel
  *           "white" product shot on white, shown whole and blended into the panel
@@ -50,7 +52,7 @@ window.LISTINGS = [
   },
   {
     maker: "Siemens", makers: ["Siemens"], model: "SGT-800", variant: "Further units", cat: "gt",
-    units: 25, mw: null, summary: "25 or more units",
+    units: 25, unitsLabel: "25+", mw: null, summary: "25 or more units",
     tags: ["Upcoming"],
     specs: [
       ["Units", "25 or more"],
@@ -198,7 +200,7 @@ window.LISTINGS = [
   },
   {
     maker: "GE", makers: ["GE"], model: "LM6000", variant: "Up to 6 units", cat: "aero",
-    units: 6, mw: null, summary: "Up to 6 units",
+    units: 6, unitsLabel: "Up to 6", mw: null, summary: "Up to 6 units",
     tags: [],
     specs: [["Units", "Up to 6"]],
     img: "lm6000-plant", fit: "photo", alt: "Aerial view of an LM6000 power plant",
@@ -251,7 +253,7 @@ window.LISTINGS = [
   },
   {
     maker: "Wärtsilä", makers: ["Wärtsilä"], model: "31SG", variant: "", cat: "recip",
-    units: 10, mw: 123, summary: "10 units · about 123 MW",
+    units: 10, mw: 123, mwLabel: "c. 123", summary: "10 units · about 123 MW",
     tags: [],
     specs: [
       ["Units", "10"],
