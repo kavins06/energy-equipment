@@ -7,6 +7,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 const { chromium } = require("playwright");
 
 const root = path.resolve(__dirname, "..");
@@ -31,6 +32,9 @@ server.listen(0, async () => {
     const err = await page.getAttribute("html", "data-error");
     if (err) throw new Error("Brochure failed to render: " + err);
     await page.pdf({ path: out, preferCSSPageSize: true, printBackground: true });
+    // Optional: save as "fast web view" so browsers show page 1 before the whole file arrives.
+    const lin = spawnSync("python3", ["-c", "import sys,pikepdf; p=pikepdf.open(sys.argv[1], allow_overwriting_input=True); p.save(sys.argv[1], linearize=True, compress_streams=True, object_stream_mode=pikepdf.ObjectStreamMode.generate)", out], { encoding: "utf8" });
+    if (lin.status !== 0) console.log("Skipped fast web view (needs python3 with pikepdf: pip install pikepdf)");
     const pages = await page.locator(".page").count();
     console.log(`Wrote ${path.relative(process.cwd(), out)} (${pages} pages)`);
   } finally {

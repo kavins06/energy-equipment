@@ -1,6 +1,14 @@
 /* Print brochure: A4 portrait, same palette and type as the site */
-@font-face { font-family: "Newsreader"; src: url("../fonts/newsreader.woff2") format("woff2"); font-weight: 200 800; font-display: block; }
-@font-face { font-family: "Archivo"; src: url("../fonts/archivo.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-display: block; }
+/* Static instances of the site's variable fonts (made with fontTools). Chromium embeds variable
+   fonts in PDFs as Type 3 outlines, which viewers render slowly; static faces embed as TrueType. */
+@font-face { font-family: "Newsreader"; src: url("fonts/newsreader-300-display.woff2") format("woff2"); font-weight: 300; font-display: block; }
+@font-face { font-family: "Newsreader"; src: url("fonts/newsreader-400-text.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-200-62.woff2") format("woff2"); font-weight: 200; font-stretch: 62%; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-300-62.woff2") format("woff2"); font-weight: 300; font-stretch: 62%; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-300-75.woff2") format("woff2"); font-weight: 300; font-stretch: 75%; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-400-75.woff2") format("woff2"); font-weight: 400; font-stretch: 75%; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-400-100.woff2") format("woff2"); font-weight: 400; font-stretch: 100%; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("fonts/archivo-600-125.woff2") format("woff2"); font-weight: 600; font-stretch: 125%; font-display: block; }
 @font-face { font-family: "IBM Plex Mono"; src: url("../fonts/ibm-plex-mono-400.woff2") format("woff2"); font-weight: 400; font-display: block; }
 @font-face { font-family: "IBM Plex Mono"; src: url("../fonts/ibm-plex-mono-500.woff2") format("woff2"); font-weight: 500; font-display: block; }
 
@@ -14,10 +22,10 @@
   --bone-2: #b6b3ab;
   --dim: #87888b;
   --faint: #55575b;
-  --line: rgba(235, 231, 223, .12);
-  --line-2: rgba(235, 231, 223, .24);
+  --line: #222221;
+  --line-2: #3d3c3a;
   --amber: #e2a24c;
-  --amber-2: rgba(226, 162, 76, .6);
+  --amber-2: #8a6430;
   --serif: "Newsreader", Georgia, serif;
   --sans: "Archivo", Arial, sans-serif;
   --mono: "IBM Plex Mono", Menlo, monospace;
@@ -49,22 +57,22 @@ sup { font: 500 .6em/0 var(--mono); vertical-align: .55em; color: var(--amber); 
 
 /* image plates */
 .plate { position: relative; overflow: hidden; background: radial-gradient(ellipse 62% 58% at 50% 60%, var(--lamp) 0%, var(--plate) 72%); }
+.plate.is-baked { background: none; }
 .plate img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; }
 .plate__art { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 3mm; color: #50535a; }
 .plate__art svg { width: 58%; height: auto; }
 .plate__art span { font: 500 5.6pt var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
 .marks { position: relative; }
-.marks::after { content: ""; position: absolute; inset: -2.4mm; pointer-events: none; --m: var(--line-2); background:
-  linear-gradient(var(--m), var(--m)) 0 0 / 3.6mm .25mm, linear-gradient(var(--m), var(--m)) 0 0 / .25mm 3.6mm,
-  linear-gradient(var(--m), var(--m)) 100% 0 / 3.6mm .25mm, linear-gradient(var(--m), var(--m)) 100% 0 / .25mm 3.6mm,
-  linear-gradient(var(--m), var(--m)) 0 100% / 3.6mm .25mm, linear-gradient(var(--m), var(--m)) 0 100% / .25mm 3.6mm,
-  linear-gradient(var(--m), var(--m)) 100% 100% / 3.6mm .25mm, linear-gradient(var(--m), var(--m)) 100% 100% / .25mm 3.6mm;
-  background-repeat: no-repeat; }
+.mk { position: absolute; width: 3.6mm; height: 3.6mm; border: 0 solid var(--line-2); pointer-events: none; }
+.mk--tl { top: -2.4mm; left: -2.4mm; border-top-width: .25mm; border-left-width: .25mm; }
+.mk--tr { top: -2.4mm; right: -2.4mm; border-top-width: .25mm; border-right-width: .25mm; }
+.mk--bl { bottom: -2.4mm; left: -2.4mm; border-bottom-width: .25mm; border-left-width: .25mm; }
+.mk--br { bottom: -2.4mm; right: -2.4mm; border-bottom-width: .25mm; border-right-width: .25mm; }
 
 /* dotted-leader particulars */
 .leaders > div { display: flex; align-items: baseline; gap: 2.4mm; padding: 1.3mm 0; font-size: 8.4pt; line-height: 1.35; }
 .leaders dt { flex: none; max-width: 42%; font: 400 6.2pt var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-.leaders > div::after { content: ""; order: 1; flex: 1 1 6mm; min-width: 6mm; align-self: center; height: .3mm; transform: translateY(.8mm); background: radial-gradient(circle, var(--faint) .18mm, transparent .24mm) 0 0 / 1.3mm .3mm repeat-x; }
+.leaders > div::after { content: ""; order: 1; flex: 1 1 6mm; min-width: 6mm; align-self: center; height: 0; transform: translateY(.8mm); border-bottom: .35mm dotted var(--faint); }
 .leaders dd { order: 2; max-width: 64%; text-align: right; color: var(--bone); }
 .leaders__empty { padding: 2mm 0; font-size: 8.4pt; color: var(--dim); }
 
@@ -95,10 +103,8 @@ sup { font: 500 .6em/0 var(--mono); vertical-align: .55em; color: var(--amber); 
 .cover__copy { margin-top: auto; }
 .cover h1 { font: 300 50pt/.94 var(--serif); letter-spacing: -.035em; font-variation-settings: "opsz" 72; margin-top: 5mm; }
 .cover__lede { max-width: 96mm; margin-top: 6mm; font-size: 9.4pt; line-height: 1.6; color: var(--bone-2); }
-.scale { height: 3.4mm; margin-top: 10mm; background:
-  repeating-linear-gradient(90deg, var(--line-2) 0 .25mm, transparent .25mm 100%) 0 0 / 17.8mm 3.4mm repeat-x,
-  repeating-linear-gradient(90deg, var(--line) 0 .25mm, transparent .25mm 100%) 0 100% / 1.78mm 1.4mm repeat-x;
-  border-bottom: .25mm solid var(--line-2); }
+.scale { height: 3.4mm; margin-top: 10mm; border-bottom: .25mm solid var(--line-2); }
+.scale svg { display: block; width: 100%; height: 100%; }
 .readout { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .readout > div { padding-top: 4mm; display: flex; flex-direction: column; gap: 1.6mm; }
 .readout > div + div { padding-left: 5mm; border-left: .25mm solid var(--line); }
@@ -127,7 +133,7 @@ sup { font: 500 .6em/0 var(--mono); vertical-align: .55em; color: var(--amber); 
 .contents ol { list-style: none; margin-top: 5mm; border-top: .25mm solid var(--line-2); }
 .contents li { display: flex; align-items: baseline; gap: 3mm; padding: 2.6mm 0; border-bottom: .25mm solid var(--line); font-size: 9.4pt; }
 .contents li b { width: 9mm; font: 500 6.4pt var(--mono); letter-spacing: .12em; color: var(--amber); }
-.contents li::after { content: ""; order: 1; flex: 1; height: .3mm; transform: translateY(-.6mm); background: radial-gradient(circle, var(--faint) .18mm, transparent .24mm) 0 0 / 1.3mm .3mm repeat-x; }
+.contents li::after { content: ""; order: 1; flex: 1; height: 0; transform: translateY(-.6mm); border-bottom: .35mm dotted var(--faint); }
 .contents li em { white-space: nowrap; order: 2; font: 400 7pt var(--mono); font-style: normal; color: var(--dim); font-variant-numeric: tabular-nums; }
 
 /* ---------- Principal lot ---------- */

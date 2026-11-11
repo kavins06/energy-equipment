@@ -82,7 +82,7 @@
       ? ""
       : '<div class="plate__art"><svg viewBox="0 0 400 200"><use href="#art-' + (l.cat === "recip" ? "engine" : "turbine") + '"/></svg></div>';
     var data = l.img ? ' data-src="../images/' + esc(l.img) + '.webp" data-fit="' + esc(l.fit || "photo") + '"' : "";
-    return '<div class="marks ' + cls + '"><div class="plate" style="height:100%"' + data + ">" + inner + "</div></div>";
+    return '<div class="marks ' + cls + '"><div class="plate" style="height:100%"' + data + ">" + inner + '</div><i class="mk mk--tl"></i><i class="mk mk--tr"></i><i class="mk mk--bl"></i><i class="mk mk--br"></i></div>';
   }
   function leaders(specs) {
     if (!specs.length) return '<dl class="leaders"><div class="leaders__empty">Full particulars available to qualified principals.</div></dl>';
@@ -93,6 +93,16 @@
       ? '<p class="ask__value">' + esc(l.price) + (l.priceBasis ? " <small>" + esc(l.priceBasis) + "</small>" : "") + "</p>"
       : '<p class="ask__value is-por">On application</p>';
     return '<div class="ask"><p class="ask__label">Asking</p>' + v + "</div>";
+  }
+
+  // instrument scale: a major tick every 17.8 mm, minor every 1.78 mm, as plain vector lines
+  function scaleSvg() {
+    var W = 178, d = "";
+    for (var i = 0; i * 1.78 <= W + 0.01; i++) {
+      var x = (i * 1.78).toFixed(2), major = i % 10 === 0;
+      d += "M" + x + " " + (major ? 0 : 2) + "V3.4";
+    }
+    return '<svg viewBox="0 0 178 3.4" preserveAspectRatio="none" aria-hidden="true"><path d="' + d + '" stroke="#3d3c3a" stroke-width=".25" fill="none"/></svg>';
   }
 
   /* ---------- Cover ---------- */
@@ -114,7 +124,7 @@
         '<p class="eyebrow">Circulated privately</p>' +
         "<h1>Capacity,<br>traded quietly.</h1>" +
         '<p class="cover__lede">Gas turbines, aeroderivatives and reciprocating engines from ' + esc(makerText) + ". " + lots.length + " lots of utility-scale generating capacity, available for acquisition.</p>" +
-        '<div class="scale"></div>' +
+        '<div class="scale">' + scaleSvg() + "</div>" +
         '<dl class="readout">' +
           "<div><dt>Capacity</dt><dd>" + atLeast(mw, 100) + "<small>MW</small></dd></div>" +
           "<div><dt>Units</dt><dd>" + atLeast(units, 10) + "</dd></div>" +
@@ -237,15 +247,15 @@
     ].forEach(function (g) {
       for (var k = 0; k < g.copies; k++) {
         var ph = k / g.copies * Math.PI * 2, dd = "";
-        for (var s = 0; s <= 900; s++) {
-          var th = s / 900 * Math.PI * 2;
+        for (var s = 0; s <= 360; s++) {
+          var th = s / 360 * Math.PI * 2;
           var r = g.r + g.a * Math.sin(g.lobes * th + ph) + g.b * Math.sin(g.lobes2 * th - ph);
           dd += (s ? "L" : "M") + (C + r * Math.cos(th)).toFixed(1) + " " + (C + r * Math.sin(th)).toFixed(1);
         }
         out.push('<path d="' + dd + 'Z"/>');
       }
     });
-    return '<svg viewBox="0 0 600 600" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width=".35" opacity=".5">' + out.join("") + "</g></svg>";
+    return '<svg viewBox="0 0 600 600" aria-hidden="true"><g fill="none" stroke="#71522b" stroke-width=".35">' + out.join("") + "</g></svg>";
   }
   function back() {
     var contact = SITE.contactEmail ? '<p class="contact">' + esc(SITE.contactEmail) + "</p>" : "";
@@ -273,7 +283,7 @@
    CSS filters make Chromium rasterise every plate at full device scale, which bloats the PDF.
    Each plate is drawn once to a canvas at about 200 dpi with the monochrome treatment and
    lamp backdrop, then placed as a JPEG. */
-  var PX_PER_CSS = 8 / 3.7795; // 8 device px per mm
+  var PX_PER_CSS = 6.3 / 3.7795; // 6.3 device px per mm, about 160 dpi
   function load(src) {
     return new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = src; });
   }
@@ -299,8 +309,8 @@
         x.filter = "grayscale(1) contrast(1.08) brightness(.7)";
         x.drawImage(im, (im.width - cw) / 2, (im.height - ch) / 2, cw, ch, 0, 0, W, H);
       }
-      var out = new Image(); out.alt = ""; out.src = c.toDataURL("image/jpeg", 0.84);
-      el.appendChild(out);
+      var out = new Image(); out.alt = ""; out.src = c.toDataURL("image/jpeg", 0.8);
+      el.appendChild(out); el.classList.add("is-baked");
       return out.decode ? out.decode() : null;
     });
   }
@@ -313,7 +323,7 @@
       x.fillStyle = "#060708"; x.fillRect(0, 0, W, H);
       x.filter = "grayscale(1) contrast(1.06) brightness(.92)";
       x.drawImage(im, 0, 0, W, H);
-      img.src = c.toDataURL("image/jpeg", 0.86);
+      img.src = c.toDataURL("image/jpeg", 0.82);
       return img.decode ? img.decode() : null;
     });
   }

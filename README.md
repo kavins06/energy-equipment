@@ -33,5 +33,5 @@ Product images come from the manufacturers' own product pages (Siemens Energy, G
 node brochure/build.js
 ```
 
-This needs Node and Playwright with Chromium (`npm i -g playwright` and `npx playwright install chromium`). The layout lives in `brochure/brochure.html`, `brochure.css` and `brochure.js`. If `contactEmail` is set in `listings.js` it is printed on the back page.
+This needs Node and Playwright with Chromium (`npm i -g playwright` and `npx playwright install chromium`). If Python with `pikepdf` is installed (`pip install pikepdf`), the PDF is also saved as "fast web view" so it starts showing before it has fully downloaded. The brochure uses static instances of the site's variable fonts in `brochure/fonts/`, because PDF viewers render embedded variable fonts slowly. The layout lives in `brochure/brochure.html`, `brochure.css` and `brochure.js`. If `contactEmail` is set in `listings.js` it is printed on the back page.
 
