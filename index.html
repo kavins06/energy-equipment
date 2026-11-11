@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power generation equipment: available inventory</title>
+<meta name="description" content="Gas turbines, aeroderivative units and reciprocating engines available for sale. Siemens, GE, Ansaldo, Wärtsilä, MTU and Caterpillar equipment at utility scale.">
+<meta name="theme-color" content="#0b1016">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Line drawings used when a listing has no photograph -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="art-turbine" viewBox="0 0 400 200">
+    <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M34 52c18 6 30 20 46 24l92 8 26-16h44l22 12 38-16 68-12v96l-68-12-38-16-22 12h-44l-26-16-92 8c-16 4-28 18-46 24z"/>
+      <path d="M92 79v42M104 80v40M116 81v38M128 82v36M140 83v34M152 84v32M164 85v30"/>
+      <path d="M270 82v36M284 76v48M298 70v60"/>
+      <path d="M204 68l-8-14h20l8 14M232 68l-8-14h20l8 14M204 132l-8 14h20l8-14M232 132l-8 14h20l8-14"/>
+      <path d="M18 100h364" stroke-dasharray="2 6"/>
+      <path d="M60 172h280M110 122v50M290 133v39M98 172v8M302 172v8"/>
+    </g>
+  </symbol>
+  <symbol id="art-engine" viewBox="0 0 400 200">
+    <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="36" y="150" width="328" height="12" rx="2"/>
+      <path d="M60 150V98h172v52"/>
+      <path d="M66 98V80h15v18M86 98V80h15v18M106 98V80h15v18M126 98V80h15v18M146 98V80h15v18M166 98V80h15v18M186 98V80h15v18M206 98V80h15v18"/>
+      <rect x="64" y="64" width="162" height="9" rx="4.5"/>
+      <circle cx="52" cy="62" r="13"/><circle cx="52" cy="62" r="4"/>
+      <path d="M64 68h-2M52 75v23h8"/>
+      <path d="M72 150v-34M92 150v-34M112 150v-34M132 150v-34M152 150v-34M172 150v-34M192 150v-34M212 150v-34"/>
+      <path d="M232 104h16v46M248 96h8"/>
+      <rect x="256" y="90" width="88" height="60" rx="6"/>
+      <path d="M272 90V74h48v16M270 104h60M270 114h60M270 124h60M270 134h60"/>
+      <path d="M56 162v10M344 162v10M200 162v10"/>
+    </g>
+  </symbol>
+</svg>
+
+<header class="hero">
+  <div class="topbar wrap">
+    <a class="wordmark" href="#top" aria-label="Power equipment, available inventory">
+      <span class="wordmark__name">Power Equipment</span>
+      <span class="wordmark__sub">Available inventory</span>
+    </a>
+    <nav class="topbar__nav" aria-label="Sections">
+      <a href="#featured">Featured</a>
+      <a href="#catalogue">Catalogue</a>
+      <button class="btn btn--ghost" type="button" data-enquire>Request details</button>
+    </nav>
+  </div>
+
+  <div class="hero__inner wrap" id="top">
+    <div class="hero__copy">
+      <p class="eyebrow">Inventory as of <span data-asof></span></p>
+      <h1>Gas turbines and engines at utility scale. <em>Available now.</em></h1>
+      <p class="hero__lede">New, zero-hour and operating units from Siemens, GE, Ansaldo, Wärtsilä, MTU and Caterpillar, offered subject to prior sale.</p>
+      <div class="hero__actions">
+        <a class="btn btn--light" href="#catalogue">View the catalogue</a>
+        <a class="btn btn--text" href="#featured">Featured lots</a>
+      </div>
+    </div>
+    <figure class="hero__figure">
+      <img src="images/hero-sgt800.webp" width="2200" height="1084" alt="Cutaway rendering of a Siemens SGT-800 gas turbine" fetchpriority="high">
+      <figcaption>Siemens SGT-800 <span>Lot 01 · 6 units · 342 MW</span></figcaption>
+    </figure>
+  </div>
+
+  <dl class="stats wrap" aria-label="Inventory at a glance">
+    <div><dt>Lots</dt><dd data-stat="lots">35</dd></div>
+    <div><dt>Stated capacity</dt><dd data-stat="gw">3.5 GW+</dd></div>
+    <div><dt>Units</dt><dd data-stat="units">330+</dd></div>
+    <div><dt>Manufacturers</dt><dd data-stat="makers">7</dd></div>
+  </dl>
+</header>
+
+<main>
+  <section class="section wrap" id="featured" aria-labelledby="featured-title">
+    <div class="section__head">
+      <p class="eyebrow eyebrow--dark">Featured lots</p>
+      <h2 id="featured-title">The largest blocks of capacity on offer</h2>
+    </div>
+    <div class="featured" data-featured></div>
+  </section>
+
+  <section class="section section--catalogue" id="catalogue" aria-labelledby="catalogue-title">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow eyebrow--dark">Catalogue</p>
+        <h2 id="catalogue-title">All available equipment</h2>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="filters__inner wrap">
+        <div class="chips" role="group" aria-label="Equipment type" data-types></div>
+        <div class="filters__right">
+          <label class="check"><input type="checkbox" data-priced><span>Priced lots</span></label>
+          <label class="select"><span class="visually-hidden">Manufacturer</span>
+            <select data-maker aria-label="Manufacturer"></select>
+          </label>
+          <label class="select"><span class="visually-hidden">Sort</span>
+            <select data-sort aria-label="Sort">
+              <option value="lot">Sort: lot number</option>
+              <option value="mw">Sort: output, high to low</option>
+              <option value="units">Sort: units, most first</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <p class="count" data-count aria-live="polite"></p>
+      <div class="grid" data-grid></div>
+      <p class="empty" data-empty hidden>No lots match these filters. <button type="button" class="link" data-reset>Clear filters</button></p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div>
+      <p class="wordmark__name">Power Equipment</p>
+      <p class="footer__asof">Inventory as of <span data-asof></span></p>
+    </div>
+    <div class="footer__notes">
+      <p>All equipment is offered subject to prior sale and to verification of specifications, title and availability. Where a detail is marked "on request" it has not yet been confirmed in writing.</p>
+      <p>Images show the model or equipment class and are not photographs of the specific units offered. Product imagery belongs to the respective manufacturers.</p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="lot" data-dialog aria-labelledby="lot-title">
+  <div class="lot__media studio" data-d-media></div>
+  <div class="lot__info">
+    <button class="lot__close" type="button" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <p class="lot__ref" data-d-ref></p>
+    <p class="lot__maker" data-d-maker></p>
+    <h2 class="lot__title" id="lot-title" data-d-title></h2>
+    <p class="lot__summary" data-d-summary></p>
+    <div class="lot__price" data-d-price></div>
+    <dl class="specs" data-d-specs></dl>
+    <p class="lot__more">Full specifications, records and inspection access are provided on request.</p>
+    <div class="lot__actions">
+      <button class="btn btn--dark" type="button" data-enquire data-d-enquire>Request details</button>
+      <p class="lot__note" data-d-note role="status"></p>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" data-toast role="status" hidden></div>
+
+<script src="listings.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
