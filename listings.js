@@ -7,10 +7,9 @@
  * unitsLabel / mwLabel: optional text shown in the schedule instead of the bare number
  *           (for example "Up to 6" or "c. 123")
  * img:      file in /images without extension; null shows the line-drawing tile
- * fit:      "cut"   transparent cut-out, shown whole on the studio panel
- *           "white" product shot on white, shown whole and blended into the panel
- *           "photo" photograph, fills the panel
- *           "blend" white-background image that fills the panel and blends into it
+ * fit:      "cut"   transparent cut-out, shown whole on the dark plate
+ *           "photo" photograph, fills the plate
+ *           (product shots on white should be cut out first; see README)
  */
 window.SITE = {
   asOf: "10 November 2026",
@@ -94,7 +93,7 @@ window.LISTINGS = [
       ["Scope", "Power island"],
       ["Output", "306 MW"],
     ],
-    img: "sgt5-4000f", fit: "white", alt: "Siemens SGT5-4000F heavy-duty gas turbine",
+    img: "sgt5-4000f-cut", fit: "cut", alt: "Siemens SGT5-4000F heavy-duty gas turbine",
   },
   {
     maker: "Ansaldo / Siemens", makers: ["Ansaldo", "Siemens"], model: "F-class gas turbine", variant: "", cat: "gt",
@@ -196,7 +195,7 @@ window.LISTINGS = [
     units: 25, mw: null, summary: "25 units, or a 12-unit set",
     tags: [],
     specs: [["Units", "25, or a 12-unit set"]],
-    img: "lm6000-generator-end", fit: "blend", alt: "Inlet end of a GE LM6000 aeroderivative gas turbine",
+    img: "lm6000-generator-end-cut", fit: "cut", alt: "Inlet end of a GE LM6000 aeroderivative gas turbine",
   },
   {
     maker: "GE", makers: ["GE"], model: "LM6000", variant: "Up to 6 units", cat: "aero",
@@ -210,7 +209,7 @@ window.LISTINGS = [
     units: null, mw: null, summary: "Several lots · sizes on request",
     tags: [],
     specs: [["Units", "Several lots, sizes on request"]],
-    img: "lm6000-turbine-end", fit: "blend", alt: "Turbine section of a GE LM6000 aeroderivative gas turbine",
+    img: "lm6000-turbine-end-cut", fit: "cut", alt: "Turbine section of a GE LM6000 aeroderivative gas turbine",
   },
   {
     maker: "GE", makers: ["GE"], model: "TM2500", variant: "Mobile", cat: "aero",
@@ -259,7 +258,7 @@ window.LISTINGS = [
       ["Units", "10"],
       ["Output", "About 123 MW total"],
     ],
-    img: "wartsila-31sg", fit: "white", alt: "Wärtsilä 31SG gas engine",
+    img: "wartsila-31sg-cut", fit: "cut", alt: "Wärtsilä 31SG gas engine",
   },
   {
     maker: "", makers: [], model: "Reciprocating engines", variant: "", cat: "recip",
@@ -286,7 +285,7 @@ window.LISTINGS = [
       ["Units", "6"],
       ["Output", "56.4 MW total"],
     ],
-    img: "wartsila-34sg", fit: "white", alt: "Wärtsilä 34SG gas engine generating set",
+    img: "wartsila-34sg-cut", fit: "cut", alt: "Wärtsilä 34SG gas engine generating set",
   },
   {
     maker: "Caterpillar", makers: ["Caterpillar"], model: "G3520", variant: "", cat: "recip",
@@ -343,7 +342,7 @@ window.LISTINGS = [
       ["Model year", "2011"],
       ["Location", "New Mexico"],
     ],
-    img: "wartsila-engine-detail", fit: "blend", alt: "Detail of a Wärtsilä engine and generator coupling",
+    img: "wartsila-engine-detail", fit: "photo", alt: "Detail of a Wärtsilä engine and generator coupling",
   },
   {
     maker: "Caterpillar", makers: ["Caterpillar"], model: "Production slots", variant: "", cat: "recip",
